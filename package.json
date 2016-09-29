@@ -1,0 +1,16 @@
+{
+  "title": "Series Organizer",
+  "name": "series-organizer",
+  "version": "0.0.1",
+  "description": "Organize your shows and track your progress",
+  "main": "index.js",
+  "author": "Scott Michaud",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}
