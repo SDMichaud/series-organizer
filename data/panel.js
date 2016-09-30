@@ -50,7 +50,27 @@ function CreateTable(dataArr){
 			//console.log("working!");
 			// Find the row for the button that was clicked and find out what the button is labled as
 			// this = button clicked, parent = td, siblings = all tds in row, ":first" = first td in row
-			console.log("Row selected: " + $(this).parent().siblings(":first").text() + ", Option: " + $(this).text());
+			//console.log("Row selected: " + $(this).parent().siblings(":first").text() + ", Option: " + $(this).text());
+			var opSelected = $(this).text();
+			switch(opSelected){
+				case "Change":
+				    console.log("Change selected");
+				    break;
+				case "Delete":
+				    let ok = window.confirm("Delete record for " + $(this).parent().siblings(":first").text() + "?");
+					//console.log(t);
+					if(ok){
+						let rowArr = [];
+						$(this).parent().siblings().each(function(){
+							rowArr.push($(this).text());
+						});
+						self.port.emit("delete-button-click", rowArr);
+						//DeleteEntry(rowArr);
+					}
+					break;
+				default:
+				    console.log("Default Switch: Error");
+			}
 			// TODO using this data, allow the saved data array to be modified (send data back to main code and do it there)
 			// self.port.emit("table-option-clicked", [above_data_here]);
 		});
@@ -58,3 +78,12 @@ function CreateTable(dataArr){
 		isTableUpToDate = true;
 	}	
 }
+
+function DeleteEntry(entryArr){
+	console.log("delete code goes here: " + entryArr.length);
+}
+
+self.port.on("epiList-change", function(){
+	$("#tableBody").html("");
+	isTableUpToDate = false;
+});

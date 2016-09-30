@@ -71,15 +71,31 @@ panel.port.on("add-button-click", function(){
 	});
 });
 
+// TODO Add code to update list after deleting entry
+panel.port.on("delete-button-click", function(entryArr){
+	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
+		//console.log(store.storage.epiList[ii]);
+		if(entryArr[0] == store.storage.epiList[ii][0] && entryArr[1] == store.storage.epiList[ii][1]){
+			console.log("Deleting " + store.storage.epiList[ii]);
+			store.storage.epiList.splice(ii, 1); // Deleting
+			panel.port.emit("epiList-change");
+		}
+	}
+	//console.log(entryArr);
+});
 popup.port.on("entry-added", function(dataArr){
 	//console.log(dataArr);
 	// TODO add code for updating table when something is added or removed
 	// TODO add a panel.port.emit() to let the panel know data has been modified (isTableUpToDate)
+	panel.port.emit("epiList-change");
 	store.storage.epiList.push(dataArr);
 	console.log(store.quotaUsage);
+	popup.hide();
+	/*
 	panel.show({
 		position: button,
 	});
+	*/
 });
 
 store.on("OverQuota", overQuotaListener);
