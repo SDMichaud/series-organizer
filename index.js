@@ -1,15 +1,20 @@
+// TODO Context menu for adding shows
+// Highlighted objects can be added as a show name
+// TODO highlighting on hover
+// TODO follow link when clicking
+// TODO Separate season and episode into numbers that can be quickly added up or down
+
+// Basically the "include" section
 var { ToggleButton } = require("sdk/ui/button/toggle");
 var panels = require("sdk/panel");
 var self = require("sdk/self");
 var store = require("sdk/simple-storage");
+var tabs = require("sdk/tabs");
 
+// Check to see if an episode list array exists in firefox storage and create one if not
 if(!store.storage.epiList){
 	store.storage.epiList = [];
 }
-
-// TODO Figure out how to save and load data
-// TODO Figure out how to create a table of saved elements (use some test data?)
-// TODO Add code to add entries to current list
 
 // Create the button
 var button = ToggleButton({
@@ -32,18 +37,16 @@ var panel = panels.Panel({
 	height: 400,
 });
 
+// Create the popup for editing values
 var popup = panels.Panel({
 	contentURL: self.data.url("popup.html"),
 	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("popup.js")],
 	onHide: handlePopupHide,
-	//width: ,
-	//height: 512,
 });
 
 
 // Runs when the toggle button state changes
 function toggleChange(state){
-	//console.log(state.label + " Current state: " + state.checked);
 	if(state.checked){
 		panel.port.emit("panel-show", store.storage.epiList);
 		panel.show({
@@ -54,16 +57,16 @@ function toggleChange(state){
 
 // Runs when the panel is hidden for any reason
 function handleHide(){
-	console.log("Hidden");
 	button.state("window", {checked: false});
 }
 
+// Runs when the popup is hidden for any reason
 function handlePopupHide(){
-	console.log("Popup is hidden");
+	popup.port.emit("popup-hidden");
 }
+
+// When the add entry button is clicked
 panel.port.on("add-button-click", function(){
-	console.log("click!");
-	//panel.resize(200, 200);
 	popup.show({
 		position: {
 			top: 40,
@@ -71,34 +74,71 @@ panel.port.on("add-button-click", function(){
 	});
 });
 
-// TODO Add code to update list after deleting entry
+// When the delete entry button is clicked
 panel.port.on("delete-button-click", function(entryArr){
-	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
-		//console.log(store.storage.epiList[ii]);
-		if(entryArr[0] == store.storage.epiList[ii][0] && entryArr[1] == store.storage.epiList[ii][1]){
-			console.log("Deleting " + store.storage.epiList[ii]);
-			store.storage.epiList.splice(ii, 1); // Deleting
-			panel.port.emit("epiList-change");
-		}
-	}
-	//console.log(entryArr);
-});
-popup.port.on("entry-added", function(dataArr){
-	//console.log(dataArr);
-	// TODO add code for updating table when something is added or removed
-	// TODO add a panel.port.emit() to let the panel know data has been modified (isTableUpToDate)
+	var entryIndex = getEntryIndexFromStorage(entryArr);
+	store.storage.epiList.splice(entryIndex, 1);
 	panel.port.emit("epiList-change");
-	store.storage.epiList.push(dataArr);
-	console.log(store.quotaUsage);
-	popup.hide();
-	/*
-	panel.show({
-		position: button,
-	});
-	*/
 });
 
+// When the change entry button is clicked
+panel.port.on("change-button-click", function(entryArr){
+	var entryIndex = getEntryIndexFromStorage(entryArr);
+	var entry = store.storage.epiList[entryIndex];
+	var changeDataArr = [entry, entryIndex];
+	popup.port.emit("change-entry", changeDataArr);
+	popup.show({
+		position: {
+			top: 40,
+		}
+	});
+});
+
+// Returns the index an entry has in the episode list
+// Used for modifying and deleting these entries
+function getEntryIndexFromStorage(entryArr){
+	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
+		if(entryArr[0] == store.storage.epiList[ii][0] && entryArr[1] == store.storage.epiList[ii][1]){
+			return ii;
+		}
+	}
+}
+
+function getEntryIndexByShowName(showName){
+	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
+		if(store.storage.epiList[ii][0] == showName){
+			return ii;
+		}
+	}
+}
+
+// Runs when an entry is added to the episode list
+popup.port.on("entry-added", function(dataArr){
+	panel.port.emit("epiList-change");
+	store.storage.epiList.push(dataArr);
+	console.log("Current storage quota: " + store.quotaUsage*100 + "%");
+	popup.hide();
+});
+
+// modifyDataArr holds the data to update as an array in [0] and the index to update in [1]
+// TODO Change these complex arrays to be objects instead?
+popup.port.on("entry-changed", function(modifyDataArr){
+	panel.port.emit("epiList-change");
+	store.storage.epiList[modifyDataArr[1]] = modifyDataArr[0];
+	popup.hide();
+});
+
+panel.port.on("row-clicked", function(showName){
+	//console.log(showName);
+	var showIndex = getEntryIndexByShowName(showName);
+	var episodeLink = store.storage.epiList[showIndex][2];
+    tabs.open(episodeLink);
+    panel.hide();	
+	
+});
+// Runs when an "OverQuota" event is triggered by storage, this is unlikely
 store.on("OverQuota", overQuotaListener);
 function overQuotaListener(){
 	console.log("Over quota!!")
 }
+

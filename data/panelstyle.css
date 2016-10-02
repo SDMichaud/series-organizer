@@ -7,3 +7,7 @@ h1{
 .test {
 	background-color: yellow;
 }
+/* Selects all table rows except ones with the class "headings" */
+tr:hover:not(.headings){
+	background-color: yellow;
+}

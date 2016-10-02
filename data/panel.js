@@ -1,14 +1,42 @@
-// TODO Add code to
-// Intercept entry button press and open dialogue box?
-// Load saved data
-// Save after entries added or changed
-// Note, maybe all this goes into the main code? (maybe port.emit the data to here?)
 $("#addButton").click(function(){
 	self.port.emit("add-button-click");
 });
 
+// Bind a listener to the table to check for click actions on it's children
+// Specifically to its tr -> button children
+$("#showTable").on("click", "tr button", function(){
+	var opSelected = $(this).text();
+	// Get an array holding the values in the row selected
+	let rowArr = [];
+	$(this).parent().siblings().each(function(){
+		rowArr.push($(this).text());
+	});
+	switch(opSelected){
+		case "Change":
+		    self.port.emit("change-button-click", rowArr);
+	        break;
+		case "Delete":
+		    let ok = window.confirm("Delete record for " + $(this).parent().siblings(":first").text() + "?");
+			if(ok){
+				self.port.emit("delete-button-click", rowArr);
+			}
+			break;
+		default:
+		    console.log("Default Switch: Error");
+		}
+	// Stop the click event for the row from being activated
+	event.stopPropagation();
+});
+
+$("#showTable").on("click", "tr", function(){
+	// Grab the show name and send it to the main code for lookup in storage array
+	let showName = $(this).children(":first").text();
+	if(showName != "Series"){
+		self.port.emit("row-clicked", showName);
+	}
+});
+
 self.port.on("panel-show", function(epiList){
-	//console.log(epiList);
 	CreateTable(epiList);
 });
 
@@ -19,7 +47,6 @@ var isTableUpToDate = false;
 var totalTableSlots = 3;
 
 function CreateTable(dataArr){
-	//console.log(dataArr);
 	if(!isTableUpToDate){
 		var tbody = $("#tableBody");
 		// One loop for every item in the saved shows list
@@ -38,52 +65,26 @@ function CreateTable(dataArr){
 			    
 			}
 		}
-		// After dynamically adding buttons to the table we have to add listeners to them
-		/*
-		$("button").not("#addButton").on("click", function(){
-			// Don't add a listener to the "add show" button, all other buttons are fine
-			// TODO: ensure buttons with listeners don't get multiple ones (remove listeners first then add them again?)
-			console.log("working!");
+		// Dynamically produced elements require jquery functions to be added after their creation
+		// These functions must be placed after the table creation code to work
+        /*
+		$("button").not("#addButton").click(function(){
+			event.stopPropagation();
+			
+		});
+		
+		$("tr").not(".headings").click(function(){
+			console.log("tr clicked")
 		});
 		*/
-		$("button").not("#addButton").click(function(){
-			//console.log("working!");
-			// Find the row for the button that was clicked and find out what the button is labled as
-			// this = button clicked, parent = td, siblings = all tds in row, ":first" = first td in row
-			//console.log("Row selected: " + $(this).parent().siblings(":first").text() + ", Option: " + $(this).text());
-			var opSelected = $(this).text();
-			switch(opSelected){
-				case "Change":
-				    console.log("Change selected");
-				    break;
-				case "Delete":
-				    let ok = window.confirm("Delete record for " + $(this).parent().siblings(":first").text() + "?");
-					//console.log(t);
-					if(ok){
-						let rowArr = [];
-						$(this).parent().siblings().each(function(){
-							rowArr.push($(this).text());
-						});
-						self.port.emit("delete-button-click", rowArr);
-						//DeleteEntry(rowArr);
-					}
-					break;
-				default:
-				    console.log("Default Switch: Error");
-			}
-			// TODO using this data, allow the saved data array to be modified (send data back to main code and do it there)
-			// self.port.emit("table-option-clicked", [above_data_here]);
-		});
+		
 		
 		isTableUpToDate = true;
 	}	
 }
 
-function DeleteEntry(entryArr){
-	console.log("delete code goes here: " + entryArr.length);
-}
-
 self.port.on("epiList-change", function(){
-	$("#tableBody").html("");
+	// Reset html
+	$("#tableBody").html("<tr class='headings'><th>Series</th><th>Current Episode</th><th>Options</th>");
 	isTableUpToDate = false;
 });
