@@ -1,8 +1,8 @@
-// TODO Context menu for adding shows
-// Highlighted objects can be added as a show name
-// TODO highlighting on hover
-// TODO follow link when clicking
+// TODO Context menu for adding shows so highlighted text can be added as a show name
+// TODO Add the option to use the current tab's url as the episode link 
 // TODO Separate season and episode into numbers that can be quickly added up or down
+// TODO Style everything to look super sick
+// TODO Possibly modify code so everything is done in one panel/fork repository?
 
 // Basically the "include" section
 var { ToggleButton } = require("sdk/ui/button/toggle");
@@ -10,6 +10,7 @@ var panels = require("sdk/panel");
 var self = require("sdk/self");
 var store = require("sdk/simple-storage");
 var tabs = require("sdk/tabs");
+var contextMenu = require("sdk/context-menu");
 
 // Check to see if an episode list array exists in firefox storage and create one if not
 if(!store.storage.epiList){
@@ -40,8 +41,27 @@ var panel = panels.Panel({
 // Create the popup for editing values
 var popup = panels.Panel({
 	contentURL: self.data.url("popup.html"),
+	// Technically don't need to use a contentScriptFile, all scripts can just be included in the html of the panels
 	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("popup.js")],
 	onHide: handlePopupHide,
+});
+
+var cm = contextMenu.Item({
+	label: "Add show to Series Organizer",
+	context: contextMenu.SelectionContext(),
+	contentScript: "self.on('click', function(){"+
+	               "    var text = window.getSelection().toString();"+
+				   "    self.postMessage(text);"+
+	               "});",
+	onMessage: function(selectionText){
+		//console.log(selectionText);
+		popup.port.emit("context-additon", selectionText);
+		popup.show({
+			position: {
+				top: 40,
+			}			
+		});
+	}
 });
 
 
@@ -96,6 +116,7 @@ panel.port.on("change-button-click", function(entryArr){
 
 // Returns the index an entry has in the episode list
 // Used for modifying and deleting these entries
+// entryArr has the format: entryArr[showName, currentEpisode]
 function getEntryIndexFromStorage(entryArr){
 	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
 		if(entryArr[0] == store.storage.epiList[ii][0] && entryArr[1] == store.storage.epiList[ii][1]){
@@ -104,6 +125,7 @@ function getEntryIndexFromStorage(entryArr){
 	}
 }
 
+// Returns the index an entry has in the episode list
 function getEntryIndexByShowName(showName){
 	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
 		if(store.storage.epiList[ii][0] == showName){
@@ -128,6 +150,7 @@ popup.port.on("entry-changed", function(modifyDataArr){
 	popup.hide();
 });
 
+// When a row is clicked, navigate to the provided show link in a new tab 
 panel.port.on("row-clicked", function(showName){
 	//console.log(showName);
 	var showIndex = getEntryIndexByShowName(showName);
@@ -136,6 +159,13 @@ panel.port.on("row-clicked", function(showName){
     panel.hide();	
 	
 });
+
+popup.port.on("current-page-request", function(){
+	popup.port.emit("current-page-reply", tabs.activeTab.url);
+});
+
+
+
 // Runs when an "OverQuota" event is triggered by storage, this is unlikely
 store.on("OverQuota", overQuotaListener);
 function overQuotaListener(){

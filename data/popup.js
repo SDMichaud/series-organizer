@@ -21,6 +21,34 @@ $("#addSubmitButton").click(function(event){
 	}
 });
 
+// Prevent pressing the enter key from trying to submit the forms
+$(document).on("keydown", "input", function(event){
+	if(event.keyCode == 13){
+		event.preventDefault();
+	}
+});
+
+$("#firstEpiButton").click(function(event){
+	$("#curEpisode").val("S:1, E:1");
+	event.preventDefault();
+	event.stopPropagation();
+});
+
+$("#thisPageButton").click(function(event){
+	self.port.emit("current-page-request");
+	event.preventDefault();
+	event.stopPropagation();
+});
+
+self.port.on("context-additon", function(selectedName){
+	//console.log(selectedName);
+	$("#showName").val(selectedName);
+});
+
+self.port.on("current-page-reply", function(tabURL){
+	//console.log(tabURL);
+	$("#linkEpisode").val(tabURL);
+});
 // changeDataArr holds the entry values as an array in [0] and the index this array held in storage in [1];
 self.port.on("change-entry", function(changeDataArr){
 	isChangeModeActive = true;
