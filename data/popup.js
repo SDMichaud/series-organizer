@@ -1,6 +1,7 @@
 var isChangeModeActive = false;
 var indexOfChange = 0;
 
+/* Old Code
 $("#addSubmitButton").click(function(event){
 	// Stop the default action from occuring upon submit
 	event.preventDefault();
@@ -18,6 +19,27 @@ $("#addSubmitButton").click(function(event){
 		self.port.emit("entry-changed", modifyDataArr);
 		clearValues();
 		isChangeModeActive = false;
+	}
+});
+*/
+
+$("#addSubmitButton").click(function(event){
+	event.preventDefault();
+	var showName = $("#showName").val();
+	var curSeries = $("#seriesNum").val();
+	var curEpisode = $("#episodeNum").val();
+	var lunk = $("#linkEpisode").val();
+	var showObject = {
+		name: showName,
+		series: curSeries,
+		episode: curEpisode,
+		lnk: lunk,  
+	}
+	if(!isChangeModeActive){
+		self.port.emit("entry-add", showObject);
+		clearValues();
+	}else{
+		// modify the entry
 	}
 });
 

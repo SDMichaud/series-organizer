@@ -1,5 +1,9 @@
-// TODO Context menu for adding shows so highlighted text can be added as a show name
-// TODO Add the option to use the current tab's url as the episode link 
+// TODO Refactor code for changing entry
+// TODO Refactor code for deleting entry
+// TODO Refactor quick entry buttons
+// TODO Refactor navigation to series stream url
+// TODO Change tab order on popup window if possible
+
 // TODO Separate season and episode into numbers that can be quickly added up or down
 // TODO Style everything to look super sick
 // TODO Possibly modify code so everything is done in one panel/fork repository?
@@ -16,6 +20,20 @@ var contextMenu = require("sdk/context-menu");
 if(!store.storage.epiList){
 	store.storage.epiList = [];
 }
+
+// savedEntries will work similar to epiList but hold entries as objects 
+if(!store.storage.savedEntries){
+	store.storage.savedEntries = [];
+}
+
+/* Entry objects will have the format
+*  myEntry = {
+*      name: Show Name,
+*      series: 1,
+*      episode: 1,
+*      lnk: www.google.ca, // "link" is a reserved word	
+*  }
+*/
 
 // Create the button
 var button = ToggleButton({
@@ -68,7 +86,7 @@ var cm = contextMenu.Item({
 // Runs when the toggle button state changes
 function toggleChange(state){
 	if(state.checked){
-		panel.port.emit("panel-show", store.storage.epiList);
+		panel.port.emit("panel-show", store.storage.savedEntries);
 		panel.show({
 			position: button,
 		});
@@ -164,6 +182,11 @@ popup.port.on("current-page-request", function(){
 	popup.port.emit("current-page-reply", tabs.activeTab.url);
 });
 
+popup.port.on("entry-add", function(showObject){
+	panel.port.emit("savedEntries-modified");
+	store.storage.savedEntries.push(showObject);
+	popup.hide();
+});
 
 
 // Runs when an "OverQuota" event is triggered by storage, this is unlikely
