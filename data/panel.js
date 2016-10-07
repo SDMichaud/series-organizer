@@ -4,21 +4,20 @@ $("#addButton").click(function(){
 
 // Bind a listener to the table to check for click actions on it's children
 // Specifically to its tr -> button children
+// ALL buttons in the rows fall under this catagory, regardless of their <td>
+// This could cause issues when it comes to buttons with text vs buttons without text (just an image)
+// TODO? refactor code so buttons use "classes" instead of text for identification
 $("#showTable").on("click", "tr button", function(){
 	var opSelected = $(this).text();
-	// Get an array holding the values in the row selected
-	let rowArr = [];
-	$(this).parent().siblings().each(function(){
-		rowArr.push($(this).text());
-	});
+	let showName = $(this).parent().siblings(":first").text();
 	switch(opSelected){
 		case "Change":
-		    self.port.emit("change-button-click", rowArr);
+		    self.port.emit("change-button-click", showName);
 	        break;
 		case "Delete":
-		    let ok = window.confirm("Delete record for " + $(this).parent().siblings(":first").text() + "?");
+		    let ok = window.confirm("Delete record for " + showName + "?");
 			if(ok){
-				self.port.emit("delete-button-click", rowArr);
+				self.port.emit("delete-button-click", showName);
 			}
 			break;
 		default:
@@ -36,55 +35,34 @@ $("#showTable").on("click", "tr", function(){
 	}
 });
 
-self.port.on("panel-show", function(epiList){
-	CreateTable(epiList);
+self.port.on("panel-show", function(savedEntries){
+	CreateTable(savedEntries);
 });
 
 // Flag checking if table has recently been updated with new data
 var isTableUpToDate = false;
 
-// Flag used in the createTable loop defineing number of columns
-var totalTableSlots = 3;
-
-function CreateTable(dataArr){
+// Code that dynamically draws the table
+function CreateTable(savedEntries){
 	if(!isTableUpToDate){
 		var tbody = $("#tableBody");
 		// One loop for every item in the saved shows list
-	    for (var ii = 0; ii < dataArr.length; ii++){
+	    for (var ii = 0; ii < savedEntries.length; ii++){
 			// Create a row for this show and save a reference to it
 		    var tr = $("<tr/>").appendTo(tbody);
-			// Loop through the data for the current show and add <td>s for them
-		    for (var jj = 0; jj < totalTableSlots; jj++){
-				// The last column holds buttons for changing and deleting show data,
-				// so the last loop will be handled differently
-				if(jj != 2){
-					tr.append("<td>" + dataArr[ii][jj] + "</td>");
-				}else{
-					tr.append("<td><button>Change</button><br><button>Delete</button></td>")
-				}
-			    
-			}
+			// This string holds the html for a table row
+			var appendString = "<td>" + savedEntries[ii].name + "</td>" +
+			               "<td> S:" + savedEntries[ii].series + ", E:" + savedEntries[ii].episode + "</td>" +
+						   "<td><button>Change</button><br><button>Delete</button></td>";
+			tr.append(appendString);
 		}
-		// Dynamically produced elements require jquery functions to be added after their creation
-		// These functions must be placed after the table creation code to work
-        /*
-		$("button").not("#addButton").click(function(){
-			event.stopPropagation();
-			
-		});
-		
-		$("tr").not(".headings").click(function(){
-			console.log("tr clicked")
-		});
-		*/
-		
 		
 		isTableUpToDate = true;
 	}	
 }
 
-self.port.on("epiList-change", function(){
-	// Reset html
+self.port.on("savedEntries-modified", function(){
+	// Reset html to default headers
 	$("#tableBody").html("<tr class='headings'><th>Series</th><th>Current Episode</th><th>Options</th>");
 	isTableUpToDate = false;
 });

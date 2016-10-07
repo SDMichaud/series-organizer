@@ -1,6 +1,6 @@
-// TODO Context menu for adding shows so highlighted text can be added as a show name
-// TODO Add the option to use the current tab's url as the episode link 
-// TODO Separate season and episode into numbers that can be quickly added up or down
+// TODO See about using hidden ID elements for the table instead of looking up names
+
+// TODO add buttons to add or subtract one from seasons or episodes
 // TODO Style everything to look super sick
 // TODO Possibly modify code so everything is done in one panel/fork repository?
 
@@ -16,6 +16,20 @@ var contextMenu = require("sdk/context-menu");
 if(!store.storage.epiList){
 	store.storage.epiList = [];
 }
+
+// savedEntries will work similar to epiList but hold entries as objects 
+if(!store.storage.savedEntries){
+	store.storage.savedEntries = [];
+}
+
+/* Entry objects will have the format
+*  myEntry = {
+*      name: Show Name,
+*      series: 1,
+*      episode: 1,
+*      lnk: www.google.ca, // "link" is a reserved word	
+*  }
+*/
 
 // Create the button
 var button = ToggleButton({
@@ -46,6 +60,7 @@ var popup = panels.Panel({
 	onHide: handlePopupHide,
 });
 
+// Context menu item that will copy highlighted text and use it as a show name
 var cm = contextMenu.Item({
 	label: "Add show to Series Organizer",
 	context: contextMenu.SelectionContext(),
@@ -54,7 +69,6 @@ var cm = contextMenu.Item({
 				   "    self.postMessage(text);"+
 	               "});",
 	onMessage: function(selectionText){
-		//console.log(selectionText);
 		popup.port.emit("context-additon", selectionText);
 		popup.show({
 			position: {
@@ -68,7 +82,7 @@ var cm = contextMenu.Item({
 // Runs when the toggle button state changes
 function toggleChange(state){
 	if(state.checked){
-		panel.port.emit("panel-show", store.storage.epiList);
+		panel.port.emit("panel-show", store.storage.savedEntries);
 		panel.show({
 			position: button,
 		});
@@ -95,18 +109,21 @@ panel.port.on("add-button-click", function(){
 });
 
 // When the delete entry button is clicked
-panel.port.on("delete-button-click", function(entryArr){
-	var entryIndex = getEntryIndexFromStorage(entryArr);
-	store.storage.epiList.splice(entryIndex, 1);
-	panel.port.emit("epiList-change");
+panel.port.on("delete-button-click", function(showName){
+	var entryIndex = getEntryIndexByShowName(showName);
+	store.storage.savedEntries.splice(entryIndex, 1);
+	panel.port.emit("savedEntries-modified");
 });
 
 // When the change entry button is clicked
-panel.port.on("change-button-click", function(entryArr){
-	var entryIndex = getEntryIndexFromStorage(entryArr);
-	var entry = store.storage.epiList[entryIndex];
-	var changeDataArr = [entry, entryIndex];
-	popup.port.emit("change-entry", changeDataArr);
+panel.port.on("change-button-click", function(showName){
+	var entryIndex = getEntryIndexByShowName(showName);
+	var entryObject = store.storage.savedEntries[entryIndex];
+	var changeDataObj = {
+		index: entryIndex,
+		entry: entryObject,
+	}
+	popup.port.emit("change-entry", changeDataObj);
 	popup.show({
 		position: {
 			top: 40,
@@ -115,46 +132,25 @@ panel.port.on("change-button-click", function(entryArr){
 });
 
 // Returns the index an entry has in the episode list
-// Used for modifying and deleting these entries
-// entryArr has the format: entryArr[showName, currentEpisode]
-function getEntryIndexFromStorage(entryArr){
-	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
-		if(entryArr[0] == store.storage.epiList[ii][0] && entryArr[1] == store.storage.epiList[ii][1]){
-			return ii;
-		}
-	}
-}
-
-// Returns the index an entry has in the episode list
 function getEntryIndexByShowName(showName){
-	for( ii = 0; ii < store.storage.epiList.length; ii++ ){
-		if(store.storage.epiList[ii][0] == showName){
-			return ii;
+	for (ii = 0; ii < store.storage.savedEntries.length; ii++){
+		if(store.storage.savedEntries[ii].name == showName){
+			return ii
 		}
 	}
+	return null
 }
 
-// Runs when an entry is added to the episode list
-popup.port.on("entry-added", function(dataArr){
-	panel.port.emit("epiList-change");
-	store.storage.epiList.push(dataArr);
-	console.log("Current storage quota: " + store.quotaUsage*100 + "%");
-	popup.hide();
-});
-
-// modifyDataArr holds the data to update as an array in [0] and the index to update in [1]
-// TODO Change these complex arrays to be objects instead?
-popup.port.on("entry-changed", function(modifyDataArr){
-	panel.port.emit("epiList-change");
-	store.storage.epiList[modifyDataArr[1]] = modifyDataArr[0];
+popup.port.on("entry-change", function(changeDataObj){
+	panel.port.emit("savedEntries-modified");
+	store.storage.savedEntries[changeDataObj.index] = changeDataObj.entry;
 	popup.hide();
 });
 
 // When a row is clicked, navigate to the provided show link in a new tab 
 panel.port.on("row-clicked", function(showName){
-	//console.log(showName);
 	var showIndex = getEntryIndexByShowName(showName);
-	var episodeLink = store.storage.epiList[showIndex][2];
+	var episodeLink = store.storage.savedEntries[showIndex].lnk 
     tabs.open(episodeLink);
     panel.hide();	
 	
@@ -164,6 +160,11 @@ popup.port.on("current-page-request", function(){
 	popup.port.emit("current-page-reply", tabs.activeTab.url);
 });
 
+popup.port.on("entry-add", function(showObject){
+	panel.port.emit("savedEntries-modified");
+	store.storage.savedEntries.push(showObject);
+	popup.hide();
+});
 
 
 // Runs when an "OverQuota" event is triggered by storage, this is unlikely
