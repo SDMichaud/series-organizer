@@ -1,27 +1,5 @@
 var isChangeModeActive = false;
-var indexOfChange = 0;
-
-/* Old Code
-$("#addSubmitButton").click(function(event){
-	// Stop the default action from occuring upon submit
-	event.preventDefault();
-	var title = $("#showName").val();
-	var episode = $("#curEpisode").val();
-	var lnk = $("#linkEpisode").val();
-	// Values are placed into an array for easy handling
-	var dataArr = [title, episode, lnk];
-	if(!isChangeModeActive){
-		// Submit data to the main code and then clear values
-		self.port.emit("entry-added", dataArr);
-		clearValues();		
-	}else{
-		var modifyDataArr = [dataArr, indexOfChange];
-		self.port.emit("entry-changed", modifyDataArr);
-		clearValues();
-		isChangeModeActive = false;
-	}
-});
-*/
+var indexOfChange = -1; // Holds the index of the entry being modified when change mode is active
 
 $("#addSubmitButton").click(function(event){
 	event.preventDefault();
@@ -39,7 +17,13 @@ $("#addSubmitButton").click(function(event){
 		self.port.emit("entry-add", showObject);
 		clearValues();
 	}else{
-		// modify the entry
+		changeDataObj = {
+			index: indexOfChange,
+			entry: showObject,
+		}
+		self.port.emit("entry-change", changeDataObj);
+		clearValues();
+		endChangeMode();
 	}
 });
 
@@ -51,7 +35,8 @@ $(document).on("keydown", "input", function(event){
 });
 
 $("#firstEpiButton").click(function(event){
-	$("#curEpisode").val("S:1, E:1");
+	$("#seriesNum").val("1");
+	$("#episodeNum").val("1");
 	event.preventDefault();
 	event.stopPropagation();
 });
@@ -63,32 +48,36 @@ $("#thisPageButton").click(function(event){
 });
 
 self.port.on("context-additon", function(selectedName){
-	//console.log(selectedName);
 	$("#showName").val(selectedName);
 });
 
 self.port.on("current-page-reply", function(tabURL){
-	//console.log(tabURL);
 	$("#linkEpisode").val(tabURL);
 });
-// changeDataArr holds the entry values as an array in [0] and the index this array held in storage in [1];
-self.port.on("change-entry", function(changeDataArr){
+// changeDataObj holds index and entry values
+self.port.on("change-entry", function(changeDataObj){
 	isChangeModeActive = true;
 	$("#addSubmitButton").val("Change");
-	indexOfChange = changeDataArr[1];
-	$("#showName").val(changeDataArr[0][0]);
-	$("#curEpisode").val(changeDataArr[0][1]);
-	$("#linkEpisode").val(changeDataArr[0][2]);
+	indexOfChange = changeDataObj.index;
+	$("#showName").val(changeDataObj.entry.name);
+	$("#seriesNum").val(changeDataObj.entry.series);
+	$("#episodeNum").val(changeDataObj.entry.episode);
+	$("#linkEpisode").val(changeDataObj.entry.lnk);
 });
 
 self.port.on("popup-hidden", function(){
-	isChangeModeActive = false;
 	$("#addSubmitButton").val("Add");
 	clearValues();	
+	endChangeMode();
 });
 
+function endChangeMode(){
+	isChangeModeActive = false;
+	indexOfChange = -1;
+}
 function clearValues(){
 	$("#showName").val("");
-	$("#curEpisode").val("");
+	$("#seriesNum").val("");
+	$("#episodeNum").val("");
 	$("#linkEpisode").val("");		
 }
