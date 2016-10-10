@@ -1,8 +1,8 @@
 // TODO See about using hidden ID elements for the table instead of looking up names
 
-// TODO add buttons to add or subtract one from seasons or episodes
 // TODO Style everything to look super sick
 // TODO Possibly modify code so everything is done in one panel/fork repository?
+// TODO Possibly add day of the week show airs
 
 // Basically the "include" section
 var { ToggleButton } = require("sdk/ui/button/toggle");
@@ -12,10 +12,6 @@ var store = require("sdk/simple-storage");
 var tabs = require("sdk/tabs");
 var contextMenu = require("sdk/context-menu");
 
-// Check to see if an episode list array exists in firefox storage and create one if not
-if(!store.storage.epiList){
-	store.storage.epiList = [];
-}
 
 // savedEntries will work similar to epiList but hold entries as objects 
 if(!store.storage.savedEntries){
@@ -154,6 +150,31 @@ panel.port.on("row-clicked", function(showName){
     tabs.open(episodeLink);
     panel.hide();	
 	
+});
+
+panel.port.on("quick-button-click", function(clickDataObj){
+	//console.log("Show Name is: " + clickDataObj.showName + ", Button is: " + clickDataObj.buttonClass);
+	var showIndex = getEntryIndexByShowName(clickDataObj.showName);
+	switch(clickDataObj.buttonClass){
+		case "sPlus":
+		    store.storage.savedEntries[showIndex].series++;
+		    break;
+		case "sMinus":
+		    store.storage.savedEntries[showIndex].series--;
+		    break;
+		case "ePlus":
+		    store.storage.savedEntries[showIndex].episode++;
+		    break;
+		case "eMinus":
+		    store.storage.savedEntries[showIndex].episode--;
+		    break;
+		default:
+		    console.log("Error detecting quick button");
+			break;
+	}
+	panel.port.emit("savedEntries-modified");
+	panel.port.emit("redraw-table", store.storage.savedEntries);
+	//console.log(store.storage.savedEntries[showIndex].name);
 });
 
 popup.port.on("current-page-request", function(){
