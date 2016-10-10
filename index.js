@@ -54,6 +54,8 @@ var popup = panels.Panel({
 	// Technically don't need to use a contentScriptFile, all scripts can just be included in the html of the panels
 	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("popup.js")],
 	onHide: handlePopupHide,
+	width: 270,
+	height: 170,
 });
 
 // Context menu item that will copy highlighted text and use it as a show name
@@ -145,8 +147,12 @@ popup.port.on("entry-change", function(changeDataObj){
 
 // When a row is clicked, navigate to the provided show link in a new tab 
 panel.port.on("row-clicked", function(showName){
+	var re = /^https?:\/\//i;
 	var showIndex = getEntryIndexByShowName(showName);
 	var episodeLink = store.storage.savedEntries[showIndex].lnk 
+	if(!episodeLink.match(re)){
+		episodeLink = "http://" + episodeLink;
+	}
     tabs.open(episodeLink);
     panel.hide();	
 	

@@ -4,10 +4,14 @@ body{
 h1{
 	color: navy;
 }
-.test {
-	background-color: yellow;
+table{
+	width: 100%;
+}
+th, td:not(.inner){
+	border-bottom: 1px solid #555;
+	text-align: center;
 }
 /* Selects all table rows except ones with the class "headings" */
 tr:hover:not(.headings){
-	background-color: yellow;
+	background-color: #7BA6B4;
 }
