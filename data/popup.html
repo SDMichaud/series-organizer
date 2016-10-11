@@ -4,14 +4,14 @@
 <link rel="stylesheet" type="text/css" href="popupstyle.css">
 </head>
 <body>
+<span class='titleText'>Series Organizer <span class='versionText'>v1.0</span></span>
 <form>
-Show title:<br>
-<input type="text" id="showName" tabindex="1"><br>
-Current Episode:<br>
-S:<input type="text" size="3" id="seriesNum" tabindex="2">E:<input type="text" size="3" id="episodeNum" tabindex="3"><button id="firstEpiButton">S:1, E:1</button><br>
-Link to Episodes:<br>
-<input type="text" id="linkEpisode" tabindex="4"><button id="thisPageButton">Use This Page</button><br>
-<input type="submit" value="Add" id="addSubmitButton">
+<span class='inputText'>Show Title:</span><br>
+<input type="text" id="showName" tabindex="1"><input type="submit" class='button' value="Add Entry" id="addSubmitButton"><br>
+<span class='inputText'>Current Episode:</span><br>
+<span class='inputText'>S:</span><input type="text" size="4" id="seriesNum" tabindex="2"><span class='spacer'></span><span class='inputText'>E:</span><input type="text" size="4" id="episodeNum" tabindex="3"><button class='button' id="firstEpiButton">Use S:1, E:1</button><br>
+<span class='inputText'>Link to Episodes:</span><br>
+<input type="text" id="linkEpisode" tabindex="4"><button class='button' id="thisPageButton">Use This Page</button><br>
 </form>
 </body>
 </html>

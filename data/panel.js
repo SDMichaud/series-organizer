@@ -36,7 +36,7 @@ $("#showTable").on("click", "tr input", function(){
 	event.stopPropagation();
 });
 
-$("#showTable").on("click", "tr.outter", function(){
+$("#showTable").on("click", "tr.outer", function(){
 	// Grab the show name and send it to the main code for lookup in storage array
 	let showName = $(this).children(":first").text();
 	if(showName != "Series"){
@@ -92,14 +92,14 @@ function CreateTable(savedEntries){
 		// One loop for every item in the saved shows list
 	    for (var ii = 0; ii < savedEntries.length; ii++){
 			// Create a row for this show and save a reference to it
-		    var tr = $("<tr class='outter'/>").appendTo(tbody);
+		    var tr = $("<tr class='outer'/>").appendTo(tbody);
 			// This string holds the html for a table row, it is very complicated and I don't think there is any way around it
 			// There is a table within a table for the +/- buttons on the series and episode counts
-			var appendString = "<td>" + savedEntries[ii].name + "</td>" +
-			               "<td>" + "<table><tr><td class='inner'><input type='image' src='/data/plus.png' class='sPlus'></input></td><td class='inner'><input type='image' src='/data/plus.png' class='ePlus'></input>" + "</td>" +
+			var appendString = "<td class='outerTD'>" + savedEntries[ii].name + "</td>" +
+			               "<td class='outerTD'>" + "<table class='innerTable'><tr><td class='inner'><input type='image' src='/data/plus.png' class='sPlus'></input></td><td class='inner'><input type='image' src='/data/plus.png' class='ePlus'></input>" + "</td>" +
 			               "</tr><tr><td class='inner'>" + "S: " + savedEntries[ii].series + "</td><td class='inner'> E: " + savedEntries[ii].episode + "</td>" +
 						   "</tr><tr><td class='inner'>" + "<input type='image' src='/data/minus.png' class='sMinus'></input></td><td class='inner'><input type='image' src='minus.png' class='eMinus'></input>" + "</td></tr></table>" +
-						   "<td><input type='image' src='/data/pencil.png' class='change'></input><input type='image' src='/data/garbage.png' class='delete'></input></td>";
+						   "<td class='outerTD'><input type='image' src='/data/pencil.png' class='change'></input><input type='image' src='/data/garbage.png' class='delete'></input></td>";
 			tr.append(appendString);
 		}
 		

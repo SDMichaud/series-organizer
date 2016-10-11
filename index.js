@@ -44,8 +44,8 @@ var panel = panels.Panel({
 	contentURL: self.data.url("panel.html"),
 	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("panel.js")],
 	onHide: handleHide,
-	width: 600,
-	height: 400,
+	width: 400,
+	height: 650,
 });
 
 // Create the popup for editing values
@@ -54,8 +54,8 @@ var popup = panels.Panel({
 	// Technically don't need to use a contentScriptFile, all scripts can just be included in the html of the panels
 	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("popup.js")],
 	onHide: handlePopupHide,
-	width: 270,
-	height: 170,
+	width: 300,
+	height: 180,
 });
 
 // Context menu item that will copy highlighted text and use it as a show name

@@ -1,17 +1,66 @@
 body{
-	background-color: lightblue;
+	background-color: #ffd9cc;
+	margin-top: 20px;
 }
 h1{
 	color: navy;
 }
-table{
+table.outerTable{
+	width: 100%;
+	border-spacing: 0px;
+}
+table.innerTable{
+	border-spacing: 0px;
 	width: 100%;
 }
-th, td:not(.inner){
-	border-bottom: 1px solid #555;
+input.change{
+	margin-right: 25px;
+}
+span.addText{
+	color: #47200a;
+	font-weight: bolder;
+}
+span.titleText{
+	color: #47200a;
+	margin-top: 5px;
+	float: right;
+	font-weight: bold;
+}
+span.versionText{
+	font-style: italic;
+}
+th {
+	color: white;
+	font-size: 20px;
+	text-shadow: 
+	-1px -1px black,
+	1px -1px black,
+	-1px 1px black,
+	1px 1px black;
+	text-align: center;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+td.outerTD{
+	color: #47200a;
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+td.inner{
 	text-align: center;
 }
-/* Selects all table rows except ones with the class "headings" */
-tr:hover:not(.headings){
-	background-color: #7BA6B4;
+tr.outer:hover{
+	background-color: #ffb399;
 }
+/* Not sure if I will still use this
+input:not(.addButton):hover{
+	box-shadow: 
+	0px 0px 5px #8a6153,
+	3px 3px 2px #8a6153,
+	-3px -3px 2px #8a6153,
+	3px -3px 2px #8a6153,
+	-3px 3px 2px #8a6153;
+	background-color: rgba(0, 0, 0, 0.43);
+}
+*/
