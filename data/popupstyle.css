@@ -1,0 +1,36 @@
+body{
+	background-color: #ffb399;
+	margin-top: 15px;
+	margin-left: 25px;
+}
+/* TODO space boxes out a bit */
+input[type='text']{
+	background-color: #ffd9cc;
+	margin-right: 3px;
+	margin-bottom: 5px;
+}
+span.titleText{
+	color: #47200a;
+	font-size: 10px;
+	margin-top: 3px;
+	/*margin-bottom: 5px;*/
+	float: right;
+}
+span.versionText{
+	font-style: italic;
+}
+span.inputText{
+	color: #47200a;
+	font-size: 15px;
+	font-weight: bold;
+	margin-right: 2px;
+	margin-left: 2px;
+	/*margin-bottom: 2px;*/
+}
+span.spacer{
+	margin-right: 11px;
+}
+.button{
+	background-color: #ffd9cc;
+	cursor: pointer;
+}
