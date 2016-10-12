@@ -1,0 +1,25 @@
+body{
+	background-color: #ffd9cc;
+	margin-top: 20px;
+}
+span.titleText{
+	color: #47200a;
+	margin-top: 5px;
+	float: right;
+	font-weight: bold;
+}
+span.versionText{
+	font-style: italic;
+}
+span.boldText{
+	font-weight: bold;
+}
+div.bodyText{
+	color: #47200a;
+	margin-top: 25px;
+	clear: both;
+}
+a{
+	color: #47200a;
+	font-weight: bold;
+}

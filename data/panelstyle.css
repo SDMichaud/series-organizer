@@ -2,9 +2,6 @@ body{
 	background-color: #ffd9cc;
 	margin-top: 20px;
 }
-h1{
-	color: navy;
-}
 table.outerTable{
 	width: 100%;
 	border-spacing: 0px;
@@ -24,6 +21,11 @@ span.titleText{
 	color: #47200a;
 	margin-top: 5px;
 	float: right;
+	font-weight: bold;
+}
+a.titleText{
+	color: #47200a;
+	margin-top: 5px;
 	font-weight: bold;
 }
 span.versionText{

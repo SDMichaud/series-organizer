@@ -1,6 +1,13 @@
 $("#addButton").click(function(){
 	self.port.emit("add-button-click");
 });
+$("#backButton").click(function(){
+	self.port.emit("back-button-click");
+});
+$("#gitLink").click(function(event){
+	event.preventDefault();
+	self.port.emit("git-link-click", event.target.toString());
+});
 
 // Bind a listener to the table to check for click actions on it's children
 // Specifically to its tr -> button children

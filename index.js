@@ -1,9 +1,3 @@
-// TODO See about using hidden ID elements for the table instead of looking up names
-
-// TODO Style everything to look super sick
-// TODO Possibly modify code so everything is done in one panel/fork repository?
-// TODO Possibly add day of the week show airs
-
 // Basically the "include" section
 var { ToggleButton } = require("sdk/ui/button/toggle");
 var panels = require("sdk/panel");
@@ -181,6 +175,15 @@ panel.port.on("quick-button-click", function(clickDataObj){
 	panel.port.emit("savedEntries-modified");
 	panel.port.emit("redraw-table", store.storage.savedEntries);
 	//console.log(store.storage.savedEntries[showIndex].name);
+});
+
+panel.port.on("back-button-click", function(){
+	//console.log("here");
+	panel.port.emit("redraw-table", store.storage.savedEntries);
+});
+
+panel.port.on("git-link-click", function(lnk){
+	tabs.open(lnk);
 });
 
 popup.port.on("current-page-request", function(){
