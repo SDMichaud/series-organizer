@@ -1,12 +1,22 @@
 var isChangeModeActive = false;
 var indexOfChange = -1; // Holds the index of the entry being modified when change mode is active
 
+// a hacky way of sanitizing input
+// javascript's createTextNode will automatically escape special characters
+// use it to create a node then pull the text from that node
+// The node is never appended to the document so it is just forgotten about
+function escapeHTML(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
+
 $("#addSubmitButton").click(function(event){
 	event.preventDefault();
-	var showName = $("#showName").val();
-	var curSeries = $("#seriesNum").val();
-	var curEpisode = $("#episodeNum").val();
-	var lunk = $("#linkEpisode").val();
+	var showName = escapeHTML($("#showName").val());
+	var curSeries = escapeHTML($("#seriesNum").val());
+	var curEpisode = escapeHTML($("#episodeNum").val());
+	var lunk = escapeHTML($("#linkEpisode").val());
 	var showObject = {
 		name: showName,
 		series: curSeries,
