@@ -36,7 +36,7 @@ var button = ToggleButton({
 // Create the panel
 var panel = panels.Panel({
 	contentURL: self.data.url("panel.html"),
-	contentScriptFile: [self.data.url("jquery.min.js"), self.data.url("panel.js")],
+	contentScriptFile: [self.data.url("jquery-3.1.1.min.js"), self.data.url("jquery-ui-1.12.1/jquery-ui.min.js"), self.data.url("panel.js")],
 	onHide: handleHide,
 	width: 400,
 	height: 650,

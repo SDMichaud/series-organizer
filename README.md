@@ -5,7 +5,7 @@
 The most recent release version of the add-on can be installed from the [Mozilla Add-on Page](https://addons.mozilla.org/en-US/firefox/addon/series-organizer)
 
 ##About
-Series Organizer is an Add-on for Firefox that will allow you to manage a list of the current shows you are watching so you always know what episode you're on and can keep track of shows you want to watch. A release version is currently under review by Mozilla.
+Series Organizer is an Add-on for Firefox that will allow you to manage a list of the current shows you are watching so you always know what episode you're on and can keep track of shows you want to watch. I will try to update as much as possible.
 
 ##Running from source
 Add-ons that are not signed by Mozilla cannot be enabled on Release versions of Firefox, a [Developer's Editon](https://www.mozilla.org/en-US/firefox/developer/) is required.
