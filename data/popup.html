@@ -2,16 +2,23 @@
 <head>
 <meta charset="UTF-8"> 
 <link rel="stylesheet" type="text/css" href="popupstyle.css">
+<link rel="stylesheet" type="text/css" href="jquery-ui-1.12.1/jquery-ui.min.css">
 </head>
 <body>
-<span class='titleText'>Series Organizer <span class='versionText'>v1.0</span></span>
+<span class='titleText'>Series Organizer <span class='versionText'>v1.5</span></span>
+<div id="formDiv">
 <form>
 <span class='inputText'>Show Title:</span><br>
-<input type="text" id="showName" tabindex="1"><input type="submit" class='button' value="Add Entry" id="addSubmitButton"><br>
+<input type="text" size="35" id="showName" tabindex="1"><br>
 <span class='inputText'>Current Episode:</span><br>
 <span class='inputText'>S:</span><input type="text" size="4" id="seriesNum" tabindex="2"><span class='spacer'></span><span class='inputText'>E:</span><input type="text" size="4" id="episodeNum" tabindex="3"><button class='button' id="firstEpiButton">Use S:1, E:1</button><br>
 <span class='inputText'>Link to Episodes:</span><br>
-<input type="text" id="linkEpisode" tabindex="4"><button class='button' id="thisPageButton">Use This Page</button><br>
+<input type="text" size="18" id="linkEpisode" tabindex="4"><button class='button' id="thisPageButton">Use This Page</button><br>
+<input type="submit" class='button' value="Add Entry" id="addSubmitButton">
 </form>
+</div>
+<script src="jquery-3.1.1.min.js"></script>
+<script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>

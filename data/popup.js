@@ -24,14 +24,14 @@ $("#addSubmitButton").click(function(event){
 		lnk: lunk,  
 	}
 	if(!isChangeModeActive){
-		self.port.emit("entry-add", showObject);
+		addon.port.emit("entry-add", showObject);
 		clearValues();
 	}else{
 		changeDataObj = {
 			index: indexOfChange,
 			entry: showObject,
 		}
-		self.port.emit("entry-change", changeDataObj);
+		addon.port.emit("entry-change", changeDataObj);
 		clearValues();
 		endChangeMode();
 	}
@@ -52,20 +52,20 @@ $("#firstEpiButton").click(function(event){
 });
 
 $("#thisPageButton").click(function(event){
-	self.port.emit("current-page-request");
+	addon.port.emit("current-page-request");
 	event.preventDefault();
 	event.stopPropagation();
 });
 
-self.port.on("context-additon", function(selectedName){
+addon.port.on("context-additon", function(selectedName){
 	$("#showName").val(selectedName);
 });
 
-self.port.on("current-page-reply", function(tabURL){
+addon.port.on("current-page-reply", function(tabURL){
 	$("#linkEpisode").val(tabURL);
 });
 // changeDataObj holds index and entry values
-self.port.on("change-entry", function(changeDataObj){
+addon.port.on("change-entry", function(changeDataObj){
 	isChangeModeActive = true;
 	$("#addSubmitButton").val("Change");
 	indexOfChange = changeDataObj.index;
@@ -75,7 +75,7 @@ self.port.on("change-entry", function(changeDataObj){
 	$("#linkEpisode").val(changeDataObj.entry.lnk);
 });
 
-self.port.on("popup-hidden", function(){
+addon.port.on("popup-hidden", function(){
 	$("#addSubmitButton").val("Add");
 	clearValues();	
 	endChangeMode();
@@ -91,3 +91,5 @@ function clearValues(){
 	$("#episodeNum").val("");
 	$("#linkEpisode").val("");		
 }
+
+$(".button").button();

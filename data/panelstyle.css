@@ -1,5 +1,11 @@
+/*
+Colours:
+Text: #180800
+background: #ffeee7
+hover: #ffceb9
+*/
 body{
-	background-color: #ffd9cc;
+	background-color: #ffeee7;
 	margin-top: 20px;
 }
 table.outerTable{
@@ -14,17 +20,17 @@ input.change{
 	margin-right: 25px;
 }
 span.addText{
-	color: #47200a;
+	color: #180800;
 	font-weight: bolder;
 }
 span.titleText{
-	color: #47200a;
+	color: #180800;
 	margin-top: 5px;
 	float: right;
 	font-weight: bold;
 }
 a.titleText{
-	color: #47200a;
+	color: #180800
 	margin-top: 5px;
 	font-weight: bold;
 }
@@ -44,7 +50,7 @@ th {
 	border-bottom: 1px solid black;
 }
 td.outerTD{
-	color: #47200a;
+	color: #180800;
 	text-align: center;
 	font-weight: bold;
 	border-bottom: 1px solid black;
@@ -53,7 +59,7 @@ td.inner{
 	text-align: center;
 }
 tr.outer:hover{
-	background-color: #ffb399;
+	background-color: #ffceb9;
 }
 /* Not sure if I will still use this
 input:not(.addButton):hover{

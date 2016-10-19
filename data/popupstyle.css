@@ -1,16 +1,21 @@
+/*
+Colours:
+Text: #180800
+background: #ffeee7
+hover: #ffceb9
+*/
 body{
-	background-color: #ffb399;
+	background-color: #ffeee7;
 	margin-top: 15px;
 	margin-left: 25px;
 }
-/* TODO space boxes out a bit */
 input[type='text']{
-	background-color: #ffd9cc;
+	background-color: #ffceb9;
 	margin-right: 3px;
 	margin-bottom: 5px;
 }
 span.titleText{
-	color: #47200a;
+	color: #180800;
 	font-size: 10px;
 	margin-top: 3px;
 	/*margin-bottom: 5px;*/
@@ -20,7 +25,7 @@ span.versionText{
 	font-style: italic;
 }
 span.inputText{
-	color: #47200a;
+	color: #180800;
 	font-size: 15px;
 	font-weight: bold;
 	margin-right: 2px;
@@ -30,7 +35,10 @@ span.inputText{
 span.spacer{
 	margin-right: 11px;
 }
-.button{
-	background-color: #ffd9cc;
-	cursor: pointer;
+#formDiv{
+	display: inline-block;
+	text-align: center;
+}
+#addSubmitButton{
+	margin-top: 8px;
 }

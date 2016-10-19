@@ -1,9 +1,15 @@
+/*
+Colours:
+Text: #180800
+background: #ffeee7
+hover: #ffceb9
+*/
 body{
-	background-color: #ffd9cc;
+	background-color: #ffeee7;
 	margin-top: 20px;
 }
 span.titleText{
-	color: #47200a;
+	color: #180800;
 	margin-top: 5px;
 	float: right;
 	font-weight: bold;
@@ -15,11 +21,11 @@ span.boldText{
 	font-weight: bold;
 }
 div.bodyText{
-	color: #47200a;
+	color: #180800;
 	margin-top: 25px;
 	clear: both;
 }
 a{
-	color: #47200a;
+	color: #180800;
 	font-weight: bold;
 }
